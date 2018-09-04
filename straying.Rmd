@@ -1,0 +1,36 @@
+---
+title: "Trend analysis in the straying rate of hatchery salmon"
+author: "Mark Scheuerell"
+output:
+  rmarkdown::pdf_document:
+    fig_caption: yes        
+    includes:  
+      in_header: figure_placement.tex
+fontsize: 11pt
+geometry: margin=1.2in
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Requirements
+
+```{r load_up}
+library(readr)
+```
+
+
+# The data
+
+```{r read_data}
+# dat <- read_csv()
+```
+
+
+# The analysis
+
+```{r ssm}
+
+```
+

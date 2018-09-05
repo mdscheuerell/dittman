@@ -48,10 +48,12 @@ plot.ts(xx, ylab=expression(italic(x[t])))
 An alternative is to assume the observations follow a so-called "biased random walk". In a biased random walk, the value at time $t$ is still a function of that at time $t-1$ plus or minus some random error. However, there is also an overall tendency (bias) to travel in a generally upward or downward direction (Figure 2). Specifically,
 
 \begin{equation} \label{eqnBRW}
-x_t = \mu + x_{t-1} + \epsilon_t,
+x_t = x_{t-1} + \mu + \epsilon_t,
 \end{equation}
 
 $\mu$ is the bias, and $\epsilon_t \sim \text{N}(0,\sigma)$.
+
+\vspace{0.25in}
 
 ```{r Brw_plot, echo=FALSE, fig.width=6, fig.height=3, fig.cap="Example of a biased random walk with Guassian errors."}
 set.seed(123)
@@ -62,8 +64,13 @@ for(t in 2:50) {
 plot.ts(xx, ylab=expression(italic(x[t])))
 ```
 
-# An example
+# Example: Straying in salmon
 
+There may be a tendency for stray rates in salmon to increase or decrease over time given genetic and environmental effects. In the current case (Figure 3), there indeed appears to be a downward trend in the data.
+
+```{r obs_ts, echo=FALSE, fig.align='center', fig.cap="Observed salmon stray rates in the Elk River, Oregon.", out.width = '70%'}
+knitr::include_graphics("stray_ts.png")
+```
 
 
 ## Requirements

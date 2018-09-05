@@ -157,9 +157,9 @@ Just as with the process errors in $\mathbf{e}_t$, we can assume different forms
 
 There are a number of ways to estimate the parameters in random walk models, but the options are more limited if you want to fit the state-space version. In particular, I am fond of the 'MARSS' package\footnote{Full disclosure: I am also a coauthor of the package.} for __R__\footnote{See https://cran.r-project.org/web/packages/MARSS/index.html.}.
 
-Here is an example of fitting the multivariate model proposed in (\ref{SSM}) with 'MARSS'. I use some dummy data, but it would be trivial to substitute other data. 
+Here is an example of fitting the multivariate model proposed in (\ref{SSM}) with 'MARSS'. I use some dummy data, but it would be trivial to substitute real data. 
 
-```{r dummy_dat, eval=TRUE, fig.cap="Observations (points) of a negatively biased random walk (line."}
+```{r dummy_dat, eval=TRUE, fig.cap="Observations (points) of two negatively biased random walks (lines)."}
 library(MASS)
 ## number of states and observed ts
 NN <- 2
@@ -182,8 +182,10 @@ for(t in 2:TT) {
 ## calc obs
 yy <- xx + vv
 ## plot "data"
-plot.ts(xx[1,], ylim=range(yy[1,]), ylab=expression(italic(x[t])~~or~~italic(y[t])))
-points(yy[1,])
+plot.ts(xx[1,], ylim=range(yy), ylab=expression(italic(x[t])~~or~~italic(y[t])), col="red")
+points(yy[1,], pch=16, col="red")
+lines(xx[2,], col="blue")
+points(yy[2,], pch=16, col="blue")
 ```
 
 

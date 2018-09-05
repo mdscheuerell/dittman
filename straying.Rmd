@@ -71,24 +71,32 @@ There may be a tendency for stray rates in salmon to increase or decrease over t
 Because we typically assume Gaussian errors in random walks, but the data lie on the unit interval $[0,1]$, we must use some form of "link" in our model. The most common choice is the logit function, which maps $[0,1]$ onto $(-\infty, \infty)$. Our biased random walk model would then become
 
 \begin{equation} \label{eqnLBRW}
-y_t = y_{t-1} + \mu + \epsilon_t,
+\text{logit}(x_t) = \text{logit}(x_{t-1}) + \mu + \epsilon_t.
 \end{equation}
 
-where $y_t = \text{logit}(x_t)$. 
+Note that from here on I will drop the logit notation for simplicity and assume that $x_t$ is an appropriately transformed variate. 
 
 ```{r obs_ts, echo=FALSE, fig.align='center', fig.cap="Observed salmon stray rates in the Elk River, Oregon.", out.width = '70%'}
 knitr::include_graphics("stray_ts.png")
 ```
 
-In this case there are also data for two sexes, so if we assume different trends/biases for each of them, then we have
+In this case there are data for both females ($f$) and males ($m$), so if we assume different trends/biases for each of them, then we have
 
 \begin{align} \label{eqnLBRWs}
-y_{f,t} &= y_{f,t-1} + \mu_f + \epsilon_{f,t} \\
-y_{m,t} &= y_{m,t-1} + \mu_m + \epsilon_{m,t}.
+x_{f,t} &= x_{f,t-1} + \mu_f + \epsilon_{f,t} \\
+x_{m,t} &= x_{m,t-1} + \mu_m + \epsilon_{m,t}.
 \end{align}
 
-\begin{equation} \label{eqnLBRWs}
-y_{s,t} = y_{s,t-1} + \mu_s + \epsilon_{s,t},
+We can combine these two equations into one through matrix notation. If we define $\mathbf{x}_t = \left[x_{f,t} ~ x_{m,t}\right]^\top$, $\mathbf{m} = \left[\mu_f ~ \mu_m\right]^\top$, and $\mathbf{e}_t = \left[\epsilon_{f,t} ~ \epsilon_{m,t}\right]^\top$, then
+
+\begin{equation} \label{eqnLBRWsM}
+\mathbf{x}_t = \mathbf{x}_{t-1} + \mathbf{m}_t + \mathbf{e}_t
+\end{equation}
+
+and
+
+\begin{equation} \label{eqnLBRWsE}
+\mathbf{e}_t = \text{MVN}(\mathbf{0}, \mathbf{\Sigma}).
 \end{equation}
 
 ## Requirements

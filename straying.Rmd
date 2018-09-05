@@ -80,7 +80,16 @@ where $y_t = \text{logit}(x_t)$.
 knitr::include_graphics("stray_ts.png")
 ```
 
-In this case there are also 
+In this case there are also data for two sexes, so if we assume different trends/biases for each of them, then we have
+
+\begin{align} \label{eqnLBRWs}
+y_{f,t} &= y_{f,t-1} + \mu_f + \epsilon_{f,t} \\
+y_{m,t} &= y_{m,t-1} + \mu_m + \epsilon_{m,t}.
+\end{align}
+
+\begin{equation} \label{eqnLBRWs}
+y_{s,t} = y_{s,t-1} + \mu_s + \epsilon_{s,t},
+\end{equation}
 
 ## Requirements
 

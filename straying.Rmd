@@ -119,7 +119,7 @@ On the other hand, one could assume that the errors have the same variance and t
   \end{bmatrix}.
 \end{equation}
 
-By fitting different forms of the model, we can then gauge the relative data support for each using some form of information criteria (_e.g._, AIC).
+By fitting different forms of the model, we can then gauge the relative data support for each using some form of information criteria (_e.g._, AIC). Similarly, we can compare the data support for a model with (\ref{eqnBRW}) and without (\ref{eqnRW}) the bias term $\mu$ to see whether there is, in fact, a trend in the data.
 
 # Observation errors
 
@@ -142,27 +142,58 @@ Combining equations (\ref{eqnBRW}) and (\ref{eqnBRWobs}) leads to the univariate
 \end{gathered}
 \end{equation}
 
-which is referred to as a "biased random walk observed with error".
-
-Returning to the multivariate version of the model for both sexes, we can also write
+which is referred to as a "biased random walk observed with error". Returning to the multivariate model for both sexes in (\ref{eqnLBRWsM}), we can write
 
 \begin{equation} \label{SSM}
   \begin{gathered}
     \mathbf{x}_t = \mathbf{x}_{t-1} + \mathbf{u} + \mathbf{e}_t\\
-    \mathbf{y}_t = \mathbf{x}_t + \mathbf{v}_t
+    \mathbf{y}_t = \mathbf{x}_t + \mathbf{v}_t.
   \end{gathered}
 \end{equation}
 
+Just as with the process errors in $\mathbf{e}_t$, we can assume different forms for the covariance matix for $\mathbf{v}_t$, fit the models, and evaluate the data support for each.
 
+# Fitting random walks
 
-# Requirements
+There are a number of ways to estimate the parameters in random walk models, but the options are more limited if you want to fit the state-space version. In particular, I am fond of the 'MARSS' package\footnote{Full disclosure: I am also a coauthor of the package.} for __R__\footnote{See https://cran.r-project.org/web/packages/MARSS/index.html.}.
 
-```{r load_up, eval=FALSE}
-library(readr)
+Here is an example of fitting the multivariate model proposed in (\ref{SSM}) with 'MARSS'. I use some dummy data, but it would be trivial to substitute other data. 
+
+```{r dummy_dat, eval=TRUE, fig.cap="Observations (points) of a negatively biased random walk (line."}
+library(MASS)
+## number of states and observed ts
+NN <- 2
+## length of ts
+TT <- 30
+## process errors; dim is NN x TT
+ww <- t(mvrnorm(TT, matrix(0, NN, 1), diag(c(0.2,0.2))))
+## obs errors; dim is NN x TT
+vv <- t(mvrnorm(TT, matrix(0, NN, 1), diag(c(0.4,0.4))))
+## neg bias; different by sex
+uu <- matrix(c(-0.2,-0.1), NN, 1)
+## empty matrices for x & y
+xx <- yy <- matrix(NA, NN, TT)
+## set x1 to w1
+xx[,1] <- ww[,1]
+## calc process
+for(t in 2:TT) {
+  xx[,t] <- xx[,t-1] + uu + ww[,t]
+}
+## calc obs
+yy <- xx + vv
+## plot "data"
+plot.ts(xx[1,], ylim=range(yy[1,]), ylab=expression(italic(x[t])~~or~~italic(y[t])))
+points(yy[1,])
 ```
 
 
-# The data
+```{r load_up, eval=FALSE}
+## load MARSS pkg
+library(MARSS)
+```
+
+
+## The data
 
 ```{r read_data, eval=FALSE}
 ## dat <- read_csv()

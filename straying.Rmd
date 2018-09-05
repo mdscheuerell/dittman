@@ -22,8 +22,22 @@ $$
 x_t = \alpha + \beta t + \epsilon_t.
 $$
 
-However, any estimate of the significance of $\beta$ will be biased due to non-independence in the observation errors $\epsilon_t$.
+However, any estimates of the significance of $\alpha$ or $\beta$ will be biased due to non-independence in the observation errors $\epsilon_t$.
 
+Another alternative is to assume the observations follow a so-called "biased random walk". In a normal random walk, the value at time $t$ equals that at time $t-1$ plus or minus some random error. Specifically,
+
+\begin{equation} \label{eqnRW}
+x_t = x_{t-1} + \epsilon_t.
+\end{equation}
+
+Random walks are characterized by long deviations into positive or negative space, but there is no overall tendency to go up or down.
+
+```{r rw_plot}
+set.seed(123)
+ww <- rnorm(50)
+xx <- cumsum(ww)
+plot.ts(ww)
+```
 
 # An example
 

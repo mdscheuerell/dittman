@@ -26,13 +26,13 @@ However, any estimates of the significance of $\alpha$ or $\beta$ will be biased
 
 ## Random walks
 
-In a normal random walk, the value at time $t$ equals that at time $t-1$ plus or minus some random error. Specifically,
+In a normal random walk, the value at time $t$ equals that at time $t-1$ plus or minus some random error, which are often assumed to be Gaussian. Specifically,
 
 \begin{equation} \label{eqnRW}
-x_t = x_{t-1} + \epsilon_t.
+x_t = x_{t-1} + \epsilon_t,
 \end{equation}
 
-Random walks are characterized by long deviations into positive or negative space, but there is no overall tendency to go up or down (Figure 1).
+and $\epsilon_t \sim \text{N}(0,\sigma)$. Random walks are characterized by long deviations into positive or negative space, but there is no overall tendency to go up or down (Figure 1).
 
 \vspace{0.25in}
 

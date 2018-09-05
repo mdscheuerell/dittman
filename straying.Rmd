@@ -162,7 +162,7 @@ Here I assume $\mathbf{v}_t \sim \text{MVN}(\mathbf{0}, \mathbf{R})$. Just as wi
 
 # Fitting random walks
 
-There are a number of ways to estimate the parameters in random walk models, but the options are more limited if you want to fit the state-space version. In particular, I am fond of the 'MARSS' package\footnote{See https://cran.r-project.org/web/packages/MARSS/index.html.} for __R__.
+There are a number of ways to estimate the parameters in random walk models, but the options are more limited if you want to fit the state-space version. In particular, I am fond of the `MARSS` package\footnote{See https://cran.r-project.org/web/packages/MARSS/index.html.} for __R__.
 
 Here is an example of fitting the multivariate model proposed in (\ref{SSM}) with `MARSS`. I use some dummy data (Figure 4), but it would be trivial to substitute real data. In particular, these data are characterized by
 
@@ -170,28 +170,33 @@ Here is an example of fitting the multivariate model proposed in (\ref{SSM}) wit
 * diagonal covariance matrices as in (\ref{eqnSigma1}) for both the process and observation errors.
 
 ## Simulate data
-
+ 
+\vspace{0.1in}
+ 
 ```{r dummy_dat, eval=TRUE}
-library(MASS)
-## number of states and observed ts
+## number of processes and observed ts
 NN <- 2
 ## length of ts
 TT <- 30
+## covariance matrix for process errors
+QQ <- diag(c(0.3,0.3))
 ## process errors; dim is NN x TT
-ww <- t(mvrnorm(TT, matrix(0, NN, 1), diag(c(0.2,0.2))))
+ww <- t(MASS::mvrnorm(TT, matrix(0, NN, 1), QQ))
+## covariance matrix for process errors
+RR <- diag(c(0.1,0.1))
 ## obs errors; dim is NN x TT
-vv <- t(mvrnorm(TT, matrix(0, NN, 1), diag(c(0.4,0.4))))
+vv <- t(MASS::mvrnorm(TT, matrix(0, NN, 1), RR))
 ## neg bias; different by sex
-uu <- matrix(c(-0.2,-0.1), NN, 1)
+uu <- matrix(c(-0.3,-0.2), NN, 1)
 ## empty matrices for x & y; dims are NN x TT
 xx <- yy <- matrix(NA, NN, TT)
 ## set x1 to w1
 xx[,1] <- ww[,1]
-## calc process
+## calc process time series
 for(t in 2:TT) {
   xx[,t] <- xx[,t-1] + uu + ww[,t]
 }
-## calc obs
+## calc obs time series
 yy <- xx + vv
 ```
 
@@ -206,9 +211,33 @@ points(yy[2,], pch=16, col="blue")
 
 ## Model fitting
 
-```{r load_up, eval=FALSE}
-## load MARSS pkg
+`MARSS` defines state-space models in the same manner that you would on a white board. Thus, the model definition below will look similar to the code above. All we have to do is identify which vectors and matrices `MARSS` should fit, and what form to use.
+
+```{r fit_model}
 library(MARSS)
+## define process model
+## bias
+UU <- matrix(list("F","M"), NN, 1)
+## cov of errs
+QQ <- matrix(list(0), NN, NN)
+diag(QQ) <- c("F","M")
+## define obs model
+## cov of errs
+RR <- matrix(list(0), NN, NN)
+diag(RR) <- c("F","M")
+## needed for MARSS, but not in our model
+BB <- diag(NN)
+ZZ <- diag(NN)
+AA <- matrix(0, NN, 1)
+## combine for MARSS
+mod_list <- list(U = UU, Q = QQ,
+                 R = RR,
+                 B = BB, Z = ZZ, A = AA,
+                 tinitx=0)
+mod <- MARSS(yy, mod_list, control = list(maxit = 2000))
 ```
 
+## Model comparison
+
+We can also fit a model without the bias term and compare its AICc to that for the model above.
 

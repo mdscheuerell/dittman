@@ -16,7 +16,7 @@ knitr::opts_chunk$set(echo = TRUE)
 \begin{center}
   \textbf{Mark Scheuerell} \\
   \text{Northwest Fisheries Science Center} \\
-  \text{National Oceanic and Atmospheric Administration} \\
+  \text{National Marine Fisheries Service} \\
   \text{Seattle, WA USA} \\
   \text{mark.scheuerell@noaa.gov}
 \end{center}
@@ -103,7 +103,7 @@ We can combine these two equations into one through matrix notation. If we defin
 and
 
 \begin{equation} \label{eqnLBRWsE}
-\mathbf{e}_t = \text{MVN}(\mathbf{0}, \mathbf{\Sigma}).
+\mathbf{e}_t \sim \text{MVN}(\mathbf{0}, \mathbf{\Sigma}).
 \end{equation}
 
 We can furthermore make assumptions about (i) whether or not the bias is the same for both sexes (_i.e._, $\mu_F = \mu_M$), and (ii) the extent to which the errors are identical and/or independent. That is, the model as written in (\ref{eqnLBRWsE}) assumes that they are IID, such that
@@ -158,13 +158,13 @@ which is referred to as a "biased random walk observed with error". Returning to
   \end{gathered}
 \end{equation}
 
-Just as with the process errors in $\mathbf{e}_t$, we can assume different forms for the covariance matix for $\mathbf{v}_t$, fit the models, and evaluate the data support for each.
+Here I assume $\mathbf{v}_t \sim \text{MVN}(\mathbf{0}, \mathbf{\R})$. Just as with the process errors in $\mathbf{e}_t$, we can assume different forms for $\mathbf{\R}$, fit the models, and evaluate the data support for each.
 
 # Fitting random walks
 
 There are a number of ways to estimate the parameters in random walk models, but the options are more limited if you want to fit the state-space version. In particular, I am fond of the 'MARSS' package\footnote{See https://cran.r-project.org/web/packages/MARSS/index.html.} for __R__.
 
-Here is an example of fitting the multivariate model proposed in (\ref{SSM}) with 'MARSS'. I use some dummy data, but it would be trivial to substitute real data. 
+Here is an example of fitting the multivariate model proposed in (\ref{SSM}) with `MARSS`. I use some dummy data, but it would be trivial to substitute real data. 
 
 ```{r dummy_dat, eval=TRUE, fig.cap="Observations (points) of two negatively biased random walks (lines)."}
 library(MASS)

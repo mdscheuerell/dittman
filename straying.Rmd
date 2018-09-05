@@ -80,17 +80,17 @@ Note that from here on I will drop the logit notation for simplicity and assume 
 knitr::include_graphics("stray_ts.png")
 ```
 
-In this case there are data for both females ($f$) and males ($m$), so if we assume different trends/biases for each of them, then we have
+In this case there are data for both females ($F$) and males ($M$), so if we assume different trends/biases for each of them, then we have
 
 \begin{align} \label{eqnLBRWs}
-x_{f,t} &= x_{f,t-1} + \mu_f + \epsilon_{f,t} \\
-x_{m,t} &= x_{m,t-1} + \mu_m + \epsilon_{m,t}.
+x_{F,t} &= x_{F,t-1} + \mu_F + \epsilon_{F,t} \\
+x_{M,t} &= x_{M,t-1} + \mu_M + \epsilon_{M,t}.
 \end{align}
 
-We can combine these two equations into one through matrix notation. If we define $\mathbf{x}_t = \left[x_{f,t} ~ x_{m,t}\right]^\top$, $\mathbf{m} = \left[\mu_f ~ \mu_m\right]^\top$, and $\mathbf{e}_t = \left[\epsilon_{f,t} ~ \epsilon_{m,t}\right]^\top$, then
+We can combine these two equations into one through matrix notation. If we define $\mathbf{x}_t = \left[x_{F,t} ~ x_{M,t}\right]^\top$, $\mathbf{u} = \left[\mu_F ~ \mu_M\right]^\top$, and $\mathbf{e}_t = \left[\epsilon_{F,t} ~ \epsilon_{M,t}\right]^\top$, then
 
 \begin{equation} \label{eqnLBRWsM}
-\mathbf{x}_t = \mathbf{x}_{t-1} + \mathbf{m}_t + \mathbf{e}_t
+\mathbf{x}_t = \mathbf{x}_{t-1} + \mathbf{u}_t + \mathbf{e}_t
 \end{equation}
 
 and
@@ -99,13 +99,13 @@ and
 \mathbf{e}_t = \text{MVN}(\mathbf{0}, \mathbf{\Sigma}).
 \end{equation}
 
-We can furthermore make assumptions about (i) whether or not the bias is the same for both sexes (_i.e._, $\mu_f = \mu_m$), and (ii) the extent to which the errors are identical and/or independent. That is, the model as written in (\ref{eqnLBRWsE}) assumes that they are IID, such that
+We can furthermore make assumptions about (i) whether or not the bias is the same for both sexes (_i.e._, $\mu_F = \mu_M$), and (ii) the extent to which the errors are identical and/or independent. That is, the model as written in (\ref{eqnLBRWsE}) assumes that they are IID, such that
 
 \begin{equation} \label{eqnSigma1}
 \mathbf{\Sigma} = 
   \begin{bmatrix}
-    \sigma_f & 0 \\
-    0 & \sigma_m
+    \sigma_F & 0 \\
+    0 & \sigma_M
   \end{bmatrix}.
 \end{equation}
 

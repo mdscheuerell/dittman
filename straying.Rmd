@@ -99,6 +99,17 @@ and
 \mathbf{e}_t = \text{MVN}(\mathbf{0}, \mathbf{\Sigma}).
 \end{equation}
 
+We can furthermore make assumptions about (i) whether or not the bias is the same for both sexes (_i.e._, $\mu_f = \mu_m$), and (ii) the extent to which the errors are identical and/or independent. That is, the model as written in (\ref{eqnLBRWsE}) assumes that they are IID, such that
+
+\begin{equation} \label{eqnSigma}
+\mathbf{\Sigma} = 
+  \begin{bmatrix}
+    \sigma_f & 0 \\
+    0 & \sigma_m \\
+  \end{bmatrix}
+\end{equation}
+
+
 ## Requirements
 
 ```{r load_up, eval=FALSE}

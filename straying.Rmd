@@ -1,6 +1,5 @@
 ---
 title: "Trend analysis in time series"
-author: "Mark Scheuerell"
 output:
   rmarkdown::pdf_document:
     fig_caption: yes        
@@ -13,6 +12,14 @@ geometry: margin=1.2in
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
+\begin{center}
+  \textbf{Mark Scheuerell} \\
+  \text{Northwest Fisheries Science Center} \\
+  \text{National Oceanic and Atmospheric Administration} \\
+  \text{Seattle, WA USA} \\
+  \text{mark.scheuerell@noaa.gov}
+\end{center}
 
 # Trends in time series
 
@@ -155,7 +162,7 @@ Just as with the process errors in $\mathbf{e}_t$, we can assume different forms
 
 # Fitting random walks
 
-There are a number of ways to estimate the parameters in random walk models, but the options are more limited if you want to fit the state-space version. In particular, I am fond of the 'MARSS' package\footnote{Full disclosure: I am also a coauthor of the package.} for __R__\footnote{See https://cran.r-project.org/web/packages/MARSS/index.html.}.
+There are a number of ways to estimate the parameters in random walk models, but the options are more limited if you want to fit the state-space version. In particular, I am fond of the 'MARSS' package\footnote{See https://cran.r-project.org/web/packages/MARSS/index.html.} for __R__.
 
 Here is an example of fitting the multivariate model proposed in (\ref{SSM}) with 'MARSS'. I use some dummy data, but it would be trivial to substitute real data. 
 
@@ -182,7 +189,8 @@ for(t in 2:TT) {
 ## calc obs
 yy <- xx + vv
 ## plot "data"
-plot.ts(xx[1,], ylim=range(yy), ylab=expression(italic(x[t])~~or~~italic(y[t])), col="red")
+plot.ts(xx[1,], ylim=range(yy), col="red",
+        ylab=expression(italic(x[t])~~or~~italic(y[t])))
 points(yy[1,], pch=16, col="red")
 lines(xx[2,], col="blue")
 points(yy[2,], pch=16, col="blue")
@@ -192,13 +200,6 @@ points(yy[2,], pch=16, col="blue")
 ```{r load_up, eval=FALSE}
 ## load MARSS pkg
 library(MARSS)
-```
-
-
-## The data
-
-```{r read_data, eval=FALSE}
-## dat <- read_csv()
 ```
 
 

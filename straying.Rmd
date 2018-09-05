@@ -125,13 +125,35 @@ By fitting different forms of the model, we can then gauge the relative data sup
 
 The above random walk models are commonly referred to as "process" (or state) models because they are meant to represent a time-varying process (or state of nature) from which our data might have arisen. However, we rarely have perfect information from which to estimate the parameters due to sampling or observation errors. In those cases, we can combine our process model with an observation model to form a so-called "state-space" model.
 
-Returning to the univariate model in (\ref{eqnBRW}), the observed data $y$ at time $t$ are assumed to be a combination of the true, but unknown state $x_t$, and some additional observation error $\nu_t$, such that
+Returning to the univariate model in (\ref{eqnBRW}), the observed data $y$ at time $t$ are assumed to be a combination of the true, but unknown state $x_t$, and some additional observation error $v_t$, such that
 
 \begin{equation} \label{eqnBRWobs}
-y_t = x_y + \nu_t.
+y_t = x_y + v_t.
 \end{equation}
 
-The distributional form for $\nu_t$ can vary depending on the form of the response. For example, if the data were discrete counts, we might use a Poisson or negative binomial. In many cases, Gaussian errors are used for their ease of estimation and the data are transformed, if necessary, to meet the assumption.
+The distributional form for $v_t$ can vary depending on the form of the response. For example, if the data were discrete counts, we might use a Poisson or negative binomial. In many cases, Gaussian errors are used for their ease of estimation and the data are transformed, if necessary, to meet the assumption.
+
+Combining equations (\ref{eqnBRW}) and (\ref{eqnBRWobs}) leads to the univariate state-space model
+
+\begin{equation} \label{ssm} 
+\begin{gathered}
+  x_t = x_{t-1} + \mu + \epsilon_t \\
+  y_t = x_t + v_t,
+\end{gathered}
+\end{equation}
+
+which is referred to as a "biased random walk observed with error".
+
+Returning to the multivariate version of the model for both sexes, we can also write
+
+\begin{equation} \label{SSM}
+  \begin{gathered}
+    \mathbf{x}_t = \mathbf{x}_{t-1} + \mathbf{u} + \mathbf{e}_t\\
+    \mathbf{y}_t = \mathbf{x}_t + \mathbf{v}_t
+  \end{gathered}
+\end{equation}
+
+
 
 # Requirements
 

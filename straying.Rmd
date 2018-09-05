@@ -1,5 +1,5 @@
 ---
-title: "Trend analysis in the straying rate of hatchery salmon"
+title: "Trend analysis in time series"
 author: "Mark Scheuerell"
 output:
   rmarkdown::pdf_document:
@@ -14,23 +14,38 @@ geometry: margin=1.2in
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# Requirements
+# Trends in time series
 
-```{r load_up}
+Trends in time series can be estimated via simple linear regression where, for a value $x$ measured at time $t$,
+
+$$
+x_t = \alpha + \beta t + \epsilon_t.
+$$
+
+However, any estimate of the significance of $\beta$ will be biased due to non-independence in the observation errors $\epsilon_t$.
+
+
+# An example
+
+
+
+## Requirements
+
+```{r load_up, eval=FALSE}
 library(readr)
 ```
 
 
 # The data
 
-```{r read_data}
-# dat <- read_csv()
+```{r read_data, eval=FALSE}
+## dat <- read_csv()
 ```
 
 
 # The analysis
 
-```{r ssm}
+```{r ssm, eval=FALSE}
 
 ```
 

@@ -158,15 +158,20 @@ which is referred to as a "biased random walk observed with error". Returning to
   \end{gathered}
 \end{equation}
 
-Here I assume $\mathbf{v}_t \sim \text{MVN}(\mathbf{0}, \mathbf{\R})$. Just as with the process errors in $\mathbf{e}_t$, we can assume different forms for $\mathbf{\R}$, fit the models, and evaluate the data support for each.
+Here I assume $\mathbf{v}_t \sim \text{MVN}(\mathbf{0}, \mathbf{R})$. Just as with the process errors in $\mathbf{e}_t$, we can assume different forms for $\mathbf{R}$, fit the models, and evaluate the data support for each.
 
 # Fitting random walks
 
 There are a number of ways to estimate the parameters in random walk models, but the options are more limited if you want to fit the state-space version. In particular, I am fond of the 'MARSS' package\footnote{See https://cran.r-project.org/web/packages/MARSS/index.html.} for __R__.
 
-Here is an example of fitting the multivariate model proposed in (\ref{SSM}) with `MARSS`. I use some dummy data, but it would be trivial to substitute real data. 
+Here is an example of fitting the multivariate model proposed in (\ref{SSM}) with `MARSS`. I use some dummy data (Figure 4), but it would be trivial to substitute real data. In particular, these data are characterized by
 
-```{r dummy_dat, eval=TRUE, fig.cap="Observations (points) of two negatively biased random walks (lines)."}
+* negative and different biases as in (\ref{eqnLBRWsM}); and
+* diagonal covariance matrices as in (\ref{eqnSigma1}) for both the process and observation errors.
+
+## Simulate data
+
+```{r dummy_dat, eval=TRUE}
 library(MASS)
 ## number of states and observed ts
 NN <- 2
@@ -178,7 +183,7 @@ ww <- t(mvrnorm(TT, matrix(0, NN, 1), diag(c(0.2,0.2))))
 vv <- t(mvrnorm(TT, matrix(0, NN, 1), diag(c(0.4,0.4))))
 ## neg bias; different by sex
 uu <- matrix(c(-0.2,-0.1), NN, 1)
-## empty matrices for x & y
+## empty matrices for x & y; dims are NN x TT
 xx <- yy <- matrix(NA, NN, TT)
 ## set x1 to w1
 xx[,1] <- ww[,1]
@@ -188,6 +193,9 @@ for(t in 2:TT) {
 }
 ## calc obs
 yy <- xx + vv
+```
+
+```{r plot_dat, echo=FALSE, fig.width=6, fig.height=4, fig.cap="Observations (points) of two negatively biased random walks (lines)."}
 ## plot "data"
 plot.ts(xx[1,], ylim=range(yy), col="red",
         ylab=expression(italic(x[t])~~or~~italic(y[t])))
@@ -196,16 +204,11 @@ lines(xx[2,], col="blue")
 points(yy[2,], pch=16, col="blue")
 ```
 
+## Model fitting
 
 ```{r load_up, eval=FALSE}
 ## load MARSS pkg
 library(MARSS)
 ```
 
-
-# The analysis
-
-```{r ssm, eval=FALSE}
-
-```
 

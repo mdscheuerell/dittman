@@ -45,19 +45,19 @@ plot.ts(xx, ylab=expression(italic(x[t])))
 
 ## Biased random walk
 
-An alternative is to assume the observations follow a so-called "biased random walk". In a biased random walk, the value at time $t$ is still a function of that at time $t-1$ plus or minus some random error. However, there is an overall tendency (bias) to travel either up or down, which is often denoted by the parameter $\mu$. Specifically,
+An alternative is to assume the observations follow a so-called "biased random walk". In a biased random walk, the value at time $t$ is still a function of that at time $t-1$ plus or minus some random error. However, there is also an overall tendency (bias) to travel in a generally upward or downward direction (Figure 2). Specifically,
 
 \begin{equation} \label{eqnBRW}
-x_t = \mu + x_{t-1} + \epsilon_t.
+x_t = \mu + x_{t-1} + \epsilon_t,
 \end{equation}
 
-Biased random walks are 
+$\mu$ is the bias, and $\epsilon_t \sim \text{N}(0,\sigma)$.
 
 ```{r Brw_plot, echo=FALSE, fig.width=6, fig.height=3, fig.cap="Example of a biased random walk with Guassian errors."}
 set.seed(123)
 ww <- xx <- rnorm(50)
 for(t in 2:50) {
-  xx[t] <- 0.1 + xx[t-1] + ww[t]
+  xx[t] <- 0.15 + xx[t-1] + ww[t]
 }
 plot.ts(xx, ylab=expression(italic(x[t])))
 ```

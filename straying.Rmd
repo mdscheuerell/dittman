@@ -24,19 +24,23 @@ $$
 
 However, any estimates of the significance of $\alpha$ or $\beta$ will be biased due to non-independence in the observation errors $\epsilon_t$.
 
-Another alternative is to assume the observations follow a so-called "biased random walk". In a normal random walk, the value at time $t$ equals that at time $t-1$ plus or minus some random error. Specifically,
+## Random walks
+
+In a normal random walk, the value at time $t$ equals that at time $t-1$ plus or minus some random error. Specifically,
 
 \begin{equation} \label{eqnRW}
 x_t = x_{t-1} + \epsilon_t.
 \end{equation}
 
-Random walks are characterized by long deviations into positive or negative space, but there is no overall tendency to go up or down.
+Random walks are characterized by long deviations into positive or negative space, but there is no overall tendency to go up or down (Figure 1).
 
-```{r rw_plot}
+\vspace{0.25in}
+
+```{r rw_plot, echo=FALSE, fig.width=6, fig.height=3, fig.cap="Example of a random walk with Guassian errors."}
 set.seed(123)
 ww <- rnorm(50)
 xx <- cumsum(ww)
-plot.ts(ww)
+plot.ts(xx, ylab=expression(italic(x[t])))
 ```
 
 # An example

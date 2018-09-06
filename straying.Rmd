@@ -236,9 +236,15 @@ mod_list <- list(U = UU, Q = QQ,
                  R = RR,
                  B = BB, Z = ZZ, A = AA,
                  tinitx=0)
-biased_RW <- MARSS(yy, mod_list,
-                   control = list(maxit = 2000))
+biased_RW <- MARSS(yy, mod_list, control = list(maxit = 1000))
 ```
+
+\vspace{0.1in}
+
+The estimates of bias are quite close to the true values for both sexes:  
+
+* females (`U.F`) = `r round(coef(biased_RW, type="matrix")$U[1], 2)`;
+* males (`U.M`) = `r round(coef(biased_RW, type="matrix")$U[2], 2)`.
 
 ## Model comparison
 
@@ -251,8 +257,7 @@ We can also fit a model without the bias term and compare its AICc to that for t
 ## bias = 0
 mod_list$U <- matrix(0, NN, 1)
 ## fit unbiased model
-unbiased_RW <- MARSS(yy, mod_list,
-                     control = list(maxit = 2000, allow.degen = TRUE))
+unbiased_RW <- MARSS(yy, mod_list, control = list(maxit = 1000))
 ```
 
 \vspace{0.15in}

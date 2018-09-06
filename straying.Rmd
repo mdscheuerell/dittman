@@ -177,7 +177,7 @@ Here is an example of fitting the multivariate model proposed in (\ref{SSM}) wit
 ## number of processes and observed ts
 NN <- 2
 ## length of ts
-TT <- 30
+TT <- 35
 ## covariance matrix for process errors
 QQ <- diag(c(0.3,0.3))
 ## process errors; dim is NN x TT
@@ -213,7 +213,9 @@ points(yy[2,], pch=16, col="blue")
 
 `MARSS` defines state-space models in the same manner that you would on a white board. Thus, the model definition below will look similar to the code above. All we have to do is identify which vectors and matrices `MARSS` should fit, and what form to use.
 
-```{r fit_model}
+\vspace{0.15in}
+
+```{r fit_model, cache=TRUE}
 library(MARSS)
 ## define process model
 ## bias
@@ -234,10 +236,34 @@ mod_list <- list(U = UU, Q = QQ,
                  R = RR,
                  B = BB, Z = ZZ, A = AA,
                  tinitx=0)
-mod <- MARSS(yy, mod_list, control = list(maxit = 2000))
+biased_RW <- MARSS(yy, mod_list,
+                   control = list(maxit = 2000))
 ```
 
 ## Model comparison
 
-We can also fit a model without the bias term and compare its AICc to that for the model above.
+We can also fit a model without the bias term and compare its AICc to that for the model above. We only need to make one change to do so
 
+\vspace{0.15in}
+
+```{r fit_model_2, cache=TRUE}
+## redefine process model
+## bias = 0
+mod_list$U <- matrix(0, NN, 1)
+## fit unbiased model
+unbiased_RW <- MARSS(yy, mod_list,
+                     control = list(maxit = 2000, allow.degen = TRUE))
+```
+
+\vspace{0.15in}
+
+Here's a comparison of the AICc for each model (_i.e._, corrected for small sample size).
+
+\vspace{0.15in}
+
+```{r comp_AICc}
+biased_RW$AICc
+unbiased_RW$AICc
+```
+
+The data clearly favor the first model with bias terms included, as the difference in AIC is `r round(biased_RW$AICc - unbiased_RW$AICc, 1)` units lower. Also note that the biased model converged in 34 iterations of the Kalman filter, but the unbiased model failed to converge after 2000 iterations, suggesting it is not a very good model for the data.

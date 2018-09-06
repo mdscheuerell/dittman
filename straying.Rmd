@@ -23,17 +23,17 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Trends in time series
 
-Trends in time series can be estimated via simple linear regression where, for a value $x$ measured at time $t$,
+Trend analysis in time series is widely studied in many fields. One common approach ignores the implicit relatedness (_i.e._ autocorrelation) among the data and estimates the slope of any trend via simple linear regression where, for a value $x$ at time $t$,
 
 $$
-x_t = \alpha + \beta t + \epsilon_t.
+x_t = \alpha + \beta t + \epsilon_t,
 $$
 
-However, any estimates of the significance of $\alpha$ or $\beta$ will be biased due to non-independence in the observation errors $\epsilon_t$.
+and $\beta$ is the average change in $x_t$ per time step. However, any estimates of the significance of $\alpha$ or $\beta$ will be biased due to non-independence in the observation errors $\epsilon_t$. An alternative is to use some form of autoregressive time series model.
 
 ## Random walks
 
-In a normal random walk, the value at time $t$ equals that at time $t-1$ plus or minus some random error, which are often assumed to be Gaussian. Specifically,
+Random walk models are the simplest form of autoregressive time series model. In a normal random walk, the value at time $t$ equals the value at time $t-1$ plus or minus some random error, which is often assumed to be Gaussian. Specifically,
 
 \begin{equation} \label{eqnRW}
 x_t = x_{t-1} + \epsilon_t,
@@ -47,18 +47,19 @@ and $\epsilon_t \sim \text{N}(0,\sigma)$. Random walks are characterized by long
 set.seed(123)
 ww <- rnorm(50)
 xx <- cumsum(ww)
-plot.ts(xx, ylab=expression(italic(x[t])))
+par(cex.lab=0.8, cex.axis=0.8)
+plot.ts(xx, ylab=expression(italic(x[t])), las=1)
 ```
 
 ## Biased random walk
 
-An alternative is to assume the observations follow a so-called "biased random walk". In a biased random walk, the value at time $t$ is still a function of that at time $t-1$ plus or minus some random error. However, there is also an overall tendency (bias) to travel in a generally upward or downward direction (Figure 2). Specifically,
+An alternative to a normal random walk is a so-called "biased random walk". In a biased random walk, the value at time $t$ is still a function of that at time $t-1$, plus or minus some random error, but there is also an overall tendency (bias) to follow a generally upward or downward trajectory (Figure 2). Specifically, a biased random walk is written as
 
 \begin{equation} \label{eqnBRW}
 x_t = x_{t-1} + \mu + \epsilon_t,
 \end{equation}
 
-$\mu$ is the bias, and $\epsilon_t \sim \text{N}(0,\sigma)$.
+where $\mu$ is the bias and $\epsilon_t \sim \text{N}(0,\sigma)$.
 
 \vspace{0.25in}
 
@@ -68,14 +69,19 @@ ww <- xx <- rnorm(50)
 for(t in 2:50) {
   xx[t] <- 0.15 + xx[t-1] + ww[t]
 }
-plot.ts(xx, ylab=expression(italic(x[t])))
+par(cex.lab=0.8, cex.axis=0.8)
+plot.ts(xx, ylab=expression(italic(x[t])), las=1)
 ```
 
 # Example: Straying in salmon
 
 There may be a tendency for stray rates in salmon to increase or decrease over time given genetic and environmental effects. In the current case (Figure 3), there indeed appears to be a downward trend in the data.
 
-Because we typically assume Gaussian errors in random walks, but the data lie on the unit interval $[0,1]$, we must use some form of "link" in our model. The most common choice is the logit function, which maps $[0,1]$ onto $(-\infty, \infty)$. Our biased random walk model would then become
+```{r obs_ts, echo=FALSE, fig.align='center', fig.cap="Observed salmon stray rates in the Elk River, Oregon.", out.width = '70%'}
+knitr::include_graphics("stray_ts.png")
+```
+
+The data in this example lie on the unit interval $[0,1]$, but we typically assume Gaussian errors in random walks. Therefore, we must use some form of "link" in our model. The most common choice is the logit function, which maps $[0,1]$ onto $(-\infty, \infty)$. Our biased random walk model then becomes
 
 \begin{equation} \label{eqnLBRW}
 \text{logit}(x_t) = \text{logit}(x_{t-1}) + \mu + \epsilon_t.
@@ -83,21 +89,17 @@ Because we typically assume Gaussian errors in random walks, but the data lie on
 
 Note that from here on I will drop the logit notation for simplicity and assume that $x_t$ is an appropriately transformed variate. 
 
-```{r obs_ts, echo=FALSE, fig.align='center', fig.cap="Observed salmon stray rates in the Elk River, Oregon.", out.width = '70%'}
-knitr::include_graphics("stray_ts.png")
-```
-
-In this case there are data for both females ($F$) and males ($M$), so if we assume different trends/biases for each of them, then we have
+In this case there are data for both females ($F$) and males ($M$), so we have
 
 \begin{align} \label{eqnLBRWs}
-x_{F,t} &= x_{F,t-1} + \mu_F + \epsilon_{F,t} \\
+x_{F,t} &= x_{F,t-1} + \mu_F + \epsilon_{F,t}, \\
 x_{M,t} &= x_{M,t-1} + \mu_M + \epsilon_{M,t}.
 \end{align}
 
-We can combine these two equations into one through matrix notation. If we define $\mathbf{x}_t = \left[x_{F,t} ~ x_{M,t}\right]^\top$, $\mathbf{u} = \left[\mu_F ~ \mu_M\right]^\top$, and $\mathbf{e}_t = \left[\epsilon_{F,t} ~ \epsilon_{M,t}\right]^\top$, then
+We can combine these two equations through matrix notation. If we define $\mathbf{x}_t = \left[x_{F,t} ~ x_{M,t}\right]^\top$, $\mathbf{u} = \left[\mu_F ~ \mu_M\right]^\top$, and $\mathbf{e}_t = \left[\epsilon_{F,t} ~ \epsilon_{M,t}\right]^\top$, then
 
 \begin{equation} \label{eqnLBRWsM}
-\mathbf{x}_t = \mathbf{x}_{t-1} + \mathbf{u}_t + \mathbf{e}_t
+\mathbf{x}_t = \mathbf{x}_{t-1} + \mathbf{u} + \mathbf{e}_t
 \end{equation}
 
 and
@@ -106,7 +108,7 @@ and
 \mathbf{e}_t \sim \text{MVN}(\mathbf{0}, \mathbf{\Sigma}).
 \end{equation}
 
-We can furthermore make assumptions about (i) whether or not the bias is the same for both sexes (_i.e._, $\mu_F = \mu_M$), and (ii) the extent to which the errors are identical and/or independent. That is, the model as written in (\ref{eqnLBRWsE}) assumes that they are IID, such that
+Furthermore, we can make different assumptions about ($i$) whether or not the bias is the same for both sexes (_i.e._, perhaps $\mu_F = \mu_M$), and ($ii$) the extent to which the errors are identical and/or independent. That is, the model implied by (\ref{eqnLBRWs}-\ref{eqnLBRWsE}) assumes that they are IID, such that
 
 \begin{equation} \label{eqnSigma1}
 \mathbf{\Sigma} = 
@@ -126,19 +128,19 @@ On the other hand, one could assume that the errors have the same variance and t
   \end{bmatrix}.
 \end{equation}
 
-By fitting different forms of the model, we can then gauge the relative data support for each using some form of information criteria (_e.g._, AIC). Similarly, we can compare the data support for a model with (\ref{eqnBRW}) and without (\ref{eqnRW}) the bias term $\mu$ to see whether there is, in fact, a trend in the data.
+We can then fit different forms of models and gauge the relative data support for each using some form of information criteria (_e.g._, AIC). Similarly, we can compare the data support for models with and without the bias term $\mu$ or $\mathbf{u}$ to assess the data support for a trend in the data.
 
 # Observation errors
 
 The above random walk models are commonly referred to as "process" (or state) models because they are meant to represent a time-varying process (or state of nature) from which our data might have arisen. However, we rarely have perfect information from which to estimate the parameters due to sampling or observation errors. In those cases, we can combine our process model with an observation model to form a so-called "state-space" model.
 
-Returning to the univariate model in (\ref{eqnBRW}), the observed data $y$ at time $t$ are assumed to be a combination of the true, but unknown state $x_t$, and some additional observation error $v_t$, such that
+Returning to the univariate model in (\ref{eqnBRW}), we defined $x_t$ to be the state at time $t$. Here we define $y_t$ to be the actual observed datum at time $t$, which is a combination of the state $x_t$ and sampling (observation) error $v_t$, such that
 
 \begin{equation} \label{eqnBRWobs}
-y_t = x_y + v_t.
+y_t = x_t + v_t.
 \end{equation}
 
-The distributional form for $v_t$ can vary depending on the form of the response. For example, if the data were discrete counts, we might use a Poisson or negative binomial. In many cases, Gaussian errors are used for their ease of estimation and the data are transformed, if necessary, to meet the assumption.
+The distributional form for $v_t$ can vary depending on the form of the response. For example, if the data were discrete counts, we might use a Poisson or negative binomial. In many cases, Gaussian errors are used for their ease of estimation, and, if necessary, the data are appropriately transformed to meet the assumption.
 
 Combining equations (\ref{eqnBRW}) and (\ref{eqnBRWobs}) leads to the univariate state-space model
 
@@ -149,7 +151,9 @@ Combining equations (\ref{eqnBRW}) and (\ref{eqnBRWobs}) leads to the univariate
 \end{gathered}
 \end{equation}
 
-which is referred to as a "biased random walk observed with error". Returning to the multivariate model for both sexes in (\ref{eqnLBRWsM}), we can write
+which is referred to as a "biased random walk observed with error".
+
+Returning to the multivariate model for both sexes in (\ref{eqnLBRWsM}), we can define $\mathbf{y}_t = \left[y_{F,t} ~ y_{M,t}\right]^\top$ and write
 
 \begin{equation} \label{SSM}
   \begin{gathered}
@@ -162,9 +166,9 @@ Here I assume $\mathbf{v}_t \sim \text{MVN}(\mathbf{0}, \mathbf{R})$. Just as wi
 
 # Fitting random walks
 
-There are a number of ways to estimate the parameters in random walk models, but the options are more limited if you want to fit the state-space version. In particular, I am fond of the `MARSS` package\footnote{See https://cran.r-project.org/web/packages/MARSS/index.html.} for __R__.
+There are a number of ways to estimate the unknown parameters in random walk models, but the options are more limited if you want to fit a state-space version. I prefer the `MARSS` package\footnote{See https://cran.r-project.org/web/packages/MARSS/index.html.} for __R__.
 
-Here is an example of fitting the multivariate model proposed in (\ref{SSM}) with `MARSS`. I use some dummy data (Figure 4), but it would be trivial to substitute real data. In particular, these data are characterized by
+Here is an example of fitting the multivariate model proposed in (\ref{SSM}) with `MARSS`. I use some simulated data (Figure 4), but it would be trivial to substitute real data. In particular, these data are characterized by
 
 * negative and different biases as in (\ref{eqnLBRWsM}); and
 * diagonal covariance matrices as in (\ref{eqnSigma1}) for both the process and observation errors.
@@ -173,7 +177,7 @@ Here is an example of fitting the multivariate model proposed in (\ref{SSM}) wit
  
 \vspace{0.1in}
  
-```{r dummy_dat, eval=TRUE}
+```{r dummy_dat}
 ## number of processes and observed ts
 NN <- 2
 ## length of ts
@@ -202,7 +206,8 @@ yy <- xx + vv
 
 ```{r plot_dat, echo=FALSE, fig.width=6, fig.height=4, fig.cap="Observations (points) of two negatively biased random walks (lines)."}
 ## plot "data"
-plot.ts(xx[1,], ylim=range(yy), col="red",
+par(cex.lab=0.8, cex.axis=0.8)
+plot.ts(xx[1,], ylim=range(yy), col="red", las=1,
         ylab=expression(italic(x[t])~~or~~italic(y[t])))
 points(yy[1,], pch=16, col="red")
 lines(xx[2,], col="blue")
@@ -211,11 +216,11 @@ points(yy[2,], pch=16, col="blue")
 
 ## Model fitting
 
-`MARSS` defines state-space models in the same manner that you would on a white board. Thus, the model definition below will look similar to the code above. All we have to do is identify which vectors and matrices `MARSS` should fit, and what form to use.
+`MARSS` defines state-space models in the same manner that you would write them on paper. Thus, the model definition below will look similar to the simulation code above. All we have to do is identify which vectors and matrices we want `MARSS` to fit, and what form of them to use.
 
 \vspace{0.15in}
 
-```{r fit_model, cache=TRUE}
+```{r fit_model}
 library(MARSS)
 ## define process model
 ## bias
@@ -232,19 +237,18 @@ BB <- diag(NN)
 ZZ <- diag(NN)
 AA <- matrix(0, NN, 1)
 ## combine for MARSS
-mod_list <- list(U = UU, Q = QQ,
-                 R = RR,
-                 B = BB, Z = ZZ, A = AA,
-                 tinitx=0)
+mod_list <- list(U = UU, Q = QQ,         ## proc model
+                 R = RR,                 ## obs model
+                 B = BB, Z = ZZ, A = AA) ## misc
 biased_RW <- MARSS(yy, mod_list, control = list(maxit = 1000))
 ```
 
 \vspace{0.1in}
 
-The estimates of bias are quite close to the true values for both sexes:  
+The estimates of bias are quite close to the true values of -0.3 and -0.2 for females and males, respectively:  
 
-* females (`U.F`) = `r round(coef(biased_RW, type="matrix")$U[1], 2)`;
-* males (`U.M`) = `r round(coef(biased_RW, type="matrix")$U[2], 2)`.
+* females (`U.F`) = `r round(coef(biased_RW, type="matrix")$U[1], 3)`;
+* males (`U.M`) = `r round(coef(biased_RW, type="matrix")$U[2], 3)`.
 
 ## Model comparison
 
@@ -271,4 +275,4 @@ biased_RW$AICc
 unbiased_RW$AICc
 ```
 
-The data clearly favor the first model with bias terms included, as the difference in AIC is `r round(biased_RW$AICc - unbiased_RW$AICc, 1)` units lower. Also note that the biased model converged in 34 iterations of the Kalman filter, but the unbiased model failed to converge after 2000 iterations, suggesting it is not a very good model for the data.
+The data clearly favor the first model with bias terms included, as the difference in AIC is about `r round(biased_RW$AICc - unbiased_RW$AICc, 1)` units lower. Also note that the biased model converged in 34 iterations of the Kalman filter, but the unbiased model failed to converge after 1000 iterations, suggesting it is not a very good model for the data.
